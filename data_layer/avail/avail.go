@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/big"
 	"os/exec"
+	"path/filepath"
 
 	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
 	"github.com/centrifuge/go-substrate-rpc-client/v4/signature"
@@ -11,6 +12,7 @@ import (
 	bip39 "github.com/cosmos/go-bip39"
 
 	"github.com/dymensionxyz/roller/cmd/consts"
+	"github.com/dymensionxyz/roller/utils/bash"
 	"github.com/dymensionxyz/roller/utils/keys"
 	"github.com/dymensionxyz/roller/utils/roller"
 )
@@ -70,12 +72,28 @@ func NewAvail(root string) *Avail {
 	return &availConfig
 }
 
-func (a *Avail) InitializeLightNodeConfig() error {
-	return nil
+func (a *Avail) InitializeLightNodeConfig() (string, error) {
+	return "", nil
 }
 
-func (a *Avail) GetDAAccountAddress() (string, error) {
-	return a.AccAddress, nil
+// func (a *Avail) GetDAAccountAddress() (string, error) {
+// 	return a.AccAddress, nil
+// }
+
+func (a *Avail) GetDAAccountAddress() (*keys.KeyInfo, error) {
+	daKeysDir := filepath.Join(a.Root, consts.ConfigDirName.DALightNode, consts.KeysDirName)
+	cmd := exec.Command(
+		consts.Executables.CelKey, "show", a.GetKeyName(), "--node.type", "light", "--keyring-dir",
+		daKeysDir, "--keyring-backend", "test", "--output", "json",
+	)
+	output, err := bash.ExecCommandWithStdout(cmd)
+	if err != nil {
+		return nil, err
+	}
+
+	// return a.AccAddress, nil
+	address, err := keys.ParseAddressFromOutput(output)
+	return address, err
 }
 
 func (a *Avail) CheckDABalance() ([]keys.NotFundedAddressData, error) {
@@ -156,7 +174,7 @@ func (a *Avail) GetDAAccData(c roller.RollappConfig) ([]keys.AccountData, error)
 	}, nil
 }
 
-func (a *Avail) GetSequencerDAConfig() string {
+func (a *Avail) GetSequencerDAConfig(_ string) string {
 	return fmt.Sprintf(
 		`{"seed": "%s", "api_url": "%s", "app_id": 0, "tip":0}`,
 		a.Mnemonic,
@@ -182,4 +200,12 @@ func (a *Avail) GetStatus(c roller.RollappConfig) string {
 
 func (a *Avail) GetKeyName() string {
 	return "avail"
+}
+
+func (a *Avail) GetNamespaceID() string {
+	return ""
+}
+
+func (a *Avail) GetRootDirectory() string {
+	return ""
 }

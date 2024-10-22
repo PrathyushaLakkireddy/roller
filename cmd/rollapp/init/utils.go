@@ -10,6 +10,7 @@ import (
 
 	initconfig "github.com/dymensionxyz/roller/cmd/config/init"
 	"github.com/dymensionxyz/roller/cmd/consts"
+	availlightclient "github.com/dymensionxyz/roller/data_layer/avail/lightclient"
 	celestialightclient "github.com/dymensionxyz/roller/data_layer/celestia/lightclient"
 	"github.com/dymensionxyz/roller/utils/config/tomlconfig"
 	"github.com/dymensionxyz/roller/utils/errorhandling"
@@ -142,9 +143,14 @@ func runInit(
 	var daNetwork string
 	switch env {
 	case "playground":
-		if daBackend == string(consts.Celestia) {
+		//
+		// Handle both Celestia and Avail as DA layers
+		switch daBackend {
+		case string(consts.Celestia):
 			daNetwork = string(consts.CelestiaTestnet)
-		} else {
+		case string(consts.Avail): // Add support for Avail
+			daNetwork = string(consts.AvailTestnet)
+		default:
 			return fmt.Errorf("unsupported DA backend: %s", daBackend)
 		}
 	case "custom":
@@ -210,9 +216,27 @@ func runInit(
 	raSpinner.Success("rollapp initialized successfully")
 
 	/* ------------------------ Initialize DA light node ------------------------ */
-	daKeyInfo, err := celestialightclient.Initialize(env, initConfig)
-	if err != nil {
-		return err
+	// daKeyInfo, err := celestialightclient.Initialize(env, initConfig)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// if daKeyInfo != nil {
+	// 	addresses = append(addresses, *daKeyInfo)
+	// }
+	var daKeyInfo *keys.KeyInfo
+
+	// Handle initialization for both Celestia and Avail
+	if daBackend == string(consts.Celestia) {
+		daKeyInfo, err = celestialightclient.Initialize(env, initConfig)
+		if err != nil {
+			return err
+		}
+	} else if daBackend == string(consts.Avail) { // Initialize Avail light node
+		daKeyInfo, err = availlightclient.Initialize(env, initConfig) // Use Avail light client initialization
+		if err != nil {
+			return err
+		}
 	}
 
 	if daKeyInfo != nil {

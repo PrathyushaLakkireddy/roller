@@ -4,6 +4,7 @@ import (
 	"os/exec"
 
 	"github.com/dymensionxyz/roller/cmd/consts"
+	"github.com/dymensionxyz/roller/data_layer/avail"
 	"github.com/dymensionxyz/roller/data_layer/celestia"
 	"github.com/dymensionxyz/roller/data_layer/damock"
 	"github.com/dymensionxyz/roller/utils/keys"
@@ -40,8 +41,8 @@ func NewDAManager(datype consts.DAType, home string) *DAManager {
 	switch datype {
 	case consts.Celestia:
 		dalayer = celestia.NewCelestia(home)
-	// case config.Avail:
-	// 	dalayer = avail.NewAvail(home)
+	case consts.Avail:
+		dalayer = avail.NewAvail(home)
 	case consts.Local:
 		dalayer = &damock.DAMock{}
 	default:

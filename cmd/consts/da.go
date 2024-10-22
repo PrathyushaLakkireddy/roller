@@ -29,6 +29,7 @@ type DaNetwork string
 const (
 	CelestiaTestnet DaNetwork = "mocha-4"
 	CelestiaMainnet DaNetwork = "celestia"
+	AvailTestnet    DaNetwork = "avail"
 )
 
 var DaNetworks = map[string]DaData{
@@ -70,5 +71,12 @@ var DaNetworks = map[string]DaData{
 			"",
 		},
 		GasPrice: "0.002",
+	},
+	"avail": {
+		Backend:  Avail,
+		ApiUrl:   "localhost:8000",
+		RpcUrl:   "localhost:8000",
+		GasPrice: "",
+		ID:       AvailTestnet,
 	},
 }

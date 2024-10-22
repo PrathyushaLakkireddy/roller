@@ -189,6 +189,8 @@ func GetRollappMetadataFromChain(
 
 	switch hd.ID {
 	case consts.MockHubID:
+	case consts.AvailTestnetHubID: // Add a new condition for Avail's testnet
+		DA = consts.DaNetworks[string(consts.AvailTestnet)]
 	default:
 		DA = consts.DaNetworks[string(consts.CelestiaTestnet)]
 	}
