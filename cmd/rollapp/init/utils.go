@@ -143,7 +143,6 @@ func runInit(
 	var daNetwork string
 	switch env {
 	case "playground":
-		//
 		// Handle both Celestia and Avail as DA layers
 		switch daBackend {
 		case string(consts.Celestia):

@@ -4,25 +4,26 @@ import (
 	"fmt"
 	"math/big"
 	"os/exec"
-	"path/filepath"
 
 	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
 	"github.com/centrifuge/go-substrate-rpc-client/v4/signature"
 	availtypes "github.com/centrifuge/go-substrate-rpc-client/v4/types"
 	bip39 "github.com/cosmos/go-bip39"
 
+	// "github.com/availproject/avail-go-sdk/src/rpc"
+	// "github.com/centrifuge/go-substrate-rpc-client/v4/rpc"
+
 	"github.com/dymensionxyz/roller/cmd/consts"
-	"github.com/dymensionxyz/roller/utils/bash"
 	"github.com/dymensionxyz/roller/utils/keys"
 	"github.com/dymensionxyz/roller/utils/roller"
 )
 
 const (
-	ConfigFileName            = "avail.toml"
-	mnemonicEntropySize       = 256
-	keyringNetworkID    uint8 = 42
-	DefaultRPCEndpoint        = "wss://goldberg.avail.tools/ws"
-	requiredAVL               = 1
+	ConfigFileName             = "avail.toml"
+	mnemonicEntropySize        = 256
+	keyringNetworkID    uint16 = 42
+	DefaultRPCEndpoint         = "wss://goldberg.avail.tools/ws"
+	requiredAVL                = 1
 )
 
 type Avail struct {
@@ -76,25 +77,30 @@ func (a *Avail) InitializeLightNodeConfig() (string, error) {
 	return "", nil
 }
 
-// func (a *Avail) GetDAAccountAddress() (string, error) {
-// 	return a.AccAddress, nil
-// }
-
 func (a *Avail) GetDAAccountAddress() (*keys.KeyInfo, error) {
-	daKeysDir := filepath.Join(a.Root, consts.ConfigDirName.DALightNode, consts.KeysDirName)
-	cmd := exec.Command(
-		consts.Executables.CelKey, "show", a.GetKeyName(), "--node.type", "light", "--keyring-dir",
-		daKeysDir, "--keyring-backend", "test", "--output", "json",
-	)
-	output, err := bash.ExecCommandWithStdout(cmd)
-	if err != nil {
-		return nil, err
-	}
 
+	// keys.KeyInfo()
+	return &keys.KeyInfo{
+		Address: a.AccAddress,
+	}, nil
 	// return a.AccAddress, nil
-	address, err := keys.ParseAddressFromOutput(output)
-	return address, err
 }
+
+// func (a *Avail) GetDAAccountAddress() (*keys.KeyInfo, error) {
+// 	daKeysDir := filepath.Join(a.Root, consts.ConfigDirName.DALightNode, consts.KeysDirName)
+// 	cmd := exec.Command(
+// 		consts.Executables.CelKey, "show", a.GetKeyName(), "--node.type", "light", "--keyring-dir",
+// 		daKeysDir, "--keyring-backend", "test", "--output", "json",
+// 	)
+// 	output, err := bash.ExecCommandWithStdout(cmd)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	// return a.AccAddress, nil
+// 	address, err := keys.ParseAddressFromOutput(output)
+// 	return address, err
+// }
 
 func (a *Avail) CheckDABalance() ([]keys.NotFundedAddressData, error) {
 	balance, err := a.getBalance()

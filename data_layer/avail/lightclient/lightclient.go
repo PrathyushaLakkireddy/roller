@@ -9,9 +9,11 @@ import (
 
 	"github.com/pelletier/go-toml/v2"
 	"github.com/pterm/pterm"
+	"gopkg.in/yaml.v2"
 
 	"github.com/dymensionxyz/roller/cmd/consts"
 	datalayer "github.com/dymensionxyz/roller/data_layer" // Using avail package
+	"github.com/dymensionxyz/roller/data_layer/avail"
 	"github.com/dymensionxyz/roller/utils/bash"
 	"github.com/dymensionxyz/roller/utils/keys"
 	"github.com/dymensionxyz/roller/utils/roller"
@@ -41,13 +43,13 @@ func Initialize(env string, rollerData roller.RollappConfig) (*keys.KeyInfo, err
 			return nil, err
 		}
 
-		// // Fetch latest block from Avail
-		// latestHeight, latestBlockIdHash, err := avail.GetLatestBlock(rollerData)
-		// if err != nil {
-		// 	return nil, err
-		// }
-		latestHeight := "1"
-		latestBlockIdHash := ""
+		// Fetch latest block from Avail
+		latestHeight, latestBlockIdHash, err := avail.GetAvailBlockLatest(rollerData)
+		if err != nil {
+			return nil, err
+		}
+		// latestHeight := "1"
+		// latestBlockIdHash := ""
 		heightInt, err := strconv.Atoi(latestHeight)
 		if err != nil {
 			return nil, err
@@ -64,8 +66,8 @@ func Initialize(env string, rollerData roller.RollappConfig) (*keys.KeyInfo, err
 
 			pterm.Info.Printf(
 				"DA light client will be initialized at height %s, block hash %s",
-				// latestHeight,
-				// latestBlockIdHash,
+				latestHeight,
+				latestBlockIdHash,
 			)
 
 			// Update Avail-specific config
@@ -107,42 +109,48 @@ func Initialize(env string, rollerData roller.RollappConfig) (*keys.KeyInfo, err
 			} else {
 				daSpinner.UpdateText("state update found, extracting DA height")
 
-				// var result RollappStateResponse
-				// if err := yaml.Unmarshal(out.Bytes(), &result); err != nil {
-				// 	pterm.Error.Println("failed to extract state update: ", err)
-				// 	return nil, err
-				// }
+				var result RollappStateResponse
+				if err := yaml.Unmarshal(out.Bytes(), &result); err != nil {
+					pterm.Error.Println("failed to extract state update: ", err)
+					return nil, err
+				}
 
-				// // Extract height from Avail's DA path (specific to Avail's format)
-				// h, err := avail.ExtractHeightfromDAPath(result.StateInfo.DAPath)
-				// if err != nil {
-				// 	pterm.Error.Println("failed to extract height from state update DA path: ", err)
-				// 	return nil, err
-				// }
+				// Extract height from Avail's DA path (specific to Avail's format)
+				h, err := avail.ExtractHeightfromDAPath(result.StateInfo.DAPath)
+				pterm.Error.Println("extracted height from stateinfoo...", h, result.StateInfo.DAPath)
+				if err != nil {
+					pterm.Error.Println("failed to extract height from state update DA path: ", err)
+					return nil, err
+				}
 
-				// // Get block at extracted height from Avail
+				// Get block at extracted height from Avail
 				// height, hash, err := avail.GetBlockByHeight(h, rollerData)
 				// if err != nil {
 				// 	pterm.Error.Println("failed to retrieve DA height: ", err)
 				// 	return nil, err
 				// }
+				// Fetch latest block from Avail
+				height, hash, err := avail.GetAvailBlockLatest(rollerData)
+				if err != nil {
+					return nil, err
+				}
 
-				// heightInt, err := strconv.Atoi(height)
-				// if err != nil {
-				// 	return nil, err
-				// }
+				heightInt, err := strconv.Atoi(height)
+				if err != nil {
+					return nil, err
+				}
 
-				// pterm.Info.Printf(
-				// 	"the first %s state update has DA height of %s with hash %s\n",
-				// 	rollerData.RollappID,
-				// 	height,
-				// 	hash,
-				// )
-				// pterm.Info.Printf("updating %s\n", availConfigFilePath)
-				// err = UpdateConfigForAvail(availConfigFilePath, hash, heightInt)
-				// if err != nil {
-				// 	return nil, err
-				// }
+				pterm.Info.Printf(
+					"the first %s state update has DA height of %s with hash %s\n",
+					rollerData.RollappID,
+					height,
+					hash,
+				)
+				pterm.Info.Printf("updating %s\n", availConfigFilePath)
+				err = UpdateConfigForAvail(availConfigFilePath, hash, heightInt)
+				if err != nil {
+					return nil, err
+				}
 			}
 		}
 
