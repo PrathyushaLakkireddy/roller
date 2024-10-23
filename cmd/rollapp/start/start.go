@@ -206,11 +206,13 @@ func PrintOutput(
 
 	if isHealthy {
 		seqAddrData, err := sequencerutils.GetSequencerData(rlpCfg)
-		daManager := datalayer.NewDAManager(consts.Celestia, rlpCfg.Home)
+		// daManager := datalayer.NewDAManager(consts.Celestia, rlpCfg.Home)
+		daManager := datalayer.NewDAManager(consts.Avail, rlpCfg.Home)
 		celAddrData, errCel := daManager.GetDAAccData(rlpCfg)
 		if err != nil {
 			return
 		}
+		fmt.Println("da manager avail address details.......", celAddrData, err)
 
 		if err != nil {
 			return
