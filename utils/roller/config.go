@@ -86,7 +86,7 @@ func (c RollappConfig) Validate() error {
 	// }
 
 	if !IsValidDAType(string(c.DA.Backend)) {
-		fmt.Println(c.DA.Backend)
+		fmt.Println("coming hereeeee.....", c.DA.Backend)
 		return fmt.Errorf("invalid DA type: %s. supported types %s", c.DA, SupportedDas)
 	}
 

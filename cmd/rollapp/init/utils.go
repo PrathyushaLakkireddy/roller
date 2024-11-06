@@ -139,6 +139,8 @@ func runInit(
 	daBackend := as.RollappParams.Params.Da
 	pterm.Info.Println("DA backend: ", daBackend)
 
+	pterm.Info.Println("hereeeeeeeeeeee: ", daBackend)
+
 	var daData consts.DaData
 	var daNetwork string
 	switch env {
@@ -164,6 +166,8 @@ func runInit(
 		return fmt.Errorf("unsupported environment: %s", env)
 	}
 
+	pterm.Info.Println("hereeeeeeeeeeee: networkkkkkkkkkk", daBackend, daNetwork)
+
 	daData = consts.DaNetworks[daNetwork]
 	rollerTomlData := map[string]any{
 		"rollapp_id":      raID,
@@ -186,6 +190,8 @@ func runInit(
 		"DA.gas_price":          daData.GasPrice,
 	}
 
+	pterm.Info.Println("roller toml dataaa.........", rollerTomlData)
+
 	for key, value := range rollerTomlData {
 		err = tomlconfig.UpdateFieldInFile(
 			rollerConfigFilePath,
@@ -204,15 +210,17 @@ func runInit(
 		return err
 	}
 
+	pterm.Info.Println("hereeeeeeeeeeee: ", daBackend)
+
 	/* ------------------------------ Initialize Local Hub ---------------------------- */
 	// TODO: local hub is out of scope, implement as the last step
 	// hub := cmd.Flag(FlagNames.HubID).Value.String()
 	// if hub == consts.LocalHubName {
-	// 	err := initLocalHub(initConfig)
+	// err := initLocalHub(initConfig)
 	// 	utils.PrettifyErrorIfExists(err)
 	// }
 
-	raSpinner.Success("rollapp initialized successfully")
+	raSpinner.Success("rollapp initialized successfullyyyyyyyyyyy", cmd)
 
 	/* ------------------------ Initialize DA light node ------------------------ */
 	// daKeyInfo, err := celestialightclient.Initialize(env, initConfig)
@@ -223,6 +231,8 @@ func runInit(
 	// if daKeyInfo != nil {
 	// 	addresses = append(addresses, *daKeyInfo)
 	// }
+
+	raSpinner.Success("another checkkkkkkkk......")
 	var daKeyInfo *keys.KeyInfo
 
 	// Handle initialization for both Celestia and Avail
@@ -232,11 +242,16 @@ func runInit(
 			return err
 		}
 	} else if daBackend == string(consts.Avail) { // Initialize Avail light node
+		raSpinner.Success("into avail checkkkkk........")
+		raSpinner.Info("initconfig dataaa....", initConfig)
+
 		daKeyInfo, err = availlightclient.Initialize(env, initConfig) // Use Avail light client initialization
 		if err != nil {
 			return err
 		}
 	}
+
+	raSpinner.Info("upto here in utilsssssssss.........")
 
 	if daKeyInfo != nil {
 		addresses = append(addresses, *daKeyInfo)

@@ -41,10 +41,10 @@ var MockHubData = HubData{
 }
 
 var PlaygroundHubData = HubData{
-	API_URL:         "http://api-dymension-pg.mzonder.com:1318",
+	API_URL:         "http://localhost:1318",
 	ID:              PlaygroundHubID,
-	RPC_URL:         "http://rpc-dymension-pg.mzonder.com:36657",
-	ARCHIVE_RPC_URL: "http://rpc-dymension-pg.mzonder.com:36657",
+	RPC_URL:         "http://localhost:36657",
+	ARCHIVE_RPC_URL: "http://localhost:36657",
 	GAS_PRICE:       "2000000000",
 }
 
@@ -71,7 +71,7 @@ const (
 	MockHubID         = "mock"
 	LocalHubID        = "dymension_100-1"
 	DevnetHubID       = "dymension_100-1"
-	PlaygroundHubID   = "dymension_2018-1"
+	PlaygroundHubID   = "dymension_100-1"
 	TestnetHubID      = "blumbus_111-1"
 	MainnetHubID      = "dymension_1100-1"
 	AvailTestnetHubID = "avail-testnet"

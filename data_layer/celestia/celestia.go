@@ -122,6 +122,7 @@ func (c *Celestia) GetDAAccountAddress() (*keys.KeyInfo, error) {
 }
 
 func (c *Celestia) InitializeLightNodeConfig() (string, error) {
+	fmt.Println("inside celestia inittt.........")
 	raCfg, err := roller.LoadConfig(c.Root)
 	if err != nil {
 		return "", err

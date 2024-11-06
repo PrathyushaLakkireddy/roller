@@ -1,6 +1,7 @@
 package lightclient
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -30,6 +31,8 @@ func Initialize(env string, rollerData roller.RollappConfig) (*keys.KeyInfo, err
 
 		// Use Avail DAManager for light node initialization
 		damanager := datalayer.NewDAManager(rollerData.DA.Backend, rollerData.Home)
+		fmt.Println("da managerr.........", damanager)
+		fmt.Println("da manager in avail....and backendddd......", damanager.DataLayer, rollerData.DA.Backend)
 		mnemonic, err := damanager.InitializeLightNodeConfig() // For Avail
 		if err != nil {
 			return nil, err

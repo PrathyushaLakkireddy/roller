@@ -77,6 +77,8 @@ func IsInitialSequencer(addr, raID string, hd consts.HubData) (bool, error) {
 
 // TODO: most of rollapp utility functions should be tied to an entity
 func IsRollappRegistered(raID string, hd consts.HubData) (bool, error) {
+	fmt.Println("details.......", raID, hd)
+	errors.New(raID)
 	cmd := GetShowRollappCmd(raID, hd)
 	_, err := bashutils.ExecCommandWithStdout(cmd)
 	if err != nil {
@@ -110,6 +112,8 @@ func GetRollappCmd(raID string, hd consts.HubData) *exec.Cmd {
 		"q", "rollapp", "show",
 		raID, "-o", "json", "--node", hd.RPC_URL, "--chain-id", hd.ID,
 	)
+
+	fmt.Println("****** command to get rollapp metadata from chain..........********", cmd)
 
 	return cmd
 }

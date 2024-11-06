@@ -232,6 +232,7 @@ require (
 
 replace (
 	cosmossdk.io/api => cosmossdk.io/api v0.3.1
+	// github.com/dymensionxyz/roller => /home/vitwit/go/src/github.com/PrathyushaLakkireddy/roller
 	// github.com/centrifuge/go-substrate-rpc-client/v4 => github.com/availproject/go-substrate-rpc-client/v4 v4.0.12-avail-1.4.0-rc1-5e286e3
 
 	// use dymension forks

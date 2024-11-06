@@ -74,8 +74,8 @@ var DaNetworks = map[string]DaData{
 	},
 	"avail": {
 		Backend:  Avail,
-		ApiUrl:   "localhost:8000",
-		RpcUrl:   "localhost:8000",
+		ApiUrl:   "ws://localhost:8000",
+		RpcUrl:   "ws://localhost:8000",
 		GasPrice: "",
 		ID:       AvailTestnet,
 	},

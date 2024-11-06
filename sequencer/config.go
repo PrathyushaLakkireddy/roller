@@ -85,6 +85,15 @@ func updateDaConfigInToml(rlpCfg roller.RollappConfig, dymintCfg *toml.Tree) err
 		dymintCfg.Set("namespace_id", celDAManager.NamespaceID)
 	}
 
+	// TODO : handle properly, now appid is hardcoded
+	// if rlpCfg.DA.Backend == consts.Avail {
+	// 	avlDAManager, ok := damanager.DataLayer.(*avail.Avail)
+	// 	_ = avlDAManager
+	// 	if ok {
+	// 		dymintCfg.Set("app_id", 1)
+	// 	}
+	// }
+
 	if rlpCfg.DA.Backend == consts.Local {
 		dymintCfg.Set("da_layer", "mock")
 	}

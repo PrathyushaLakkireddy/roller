@@ -28,6 +28,8 @@ func Cmd() *cobra.Command {
 		Long:  ``,
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			pterm.Info.Println("comig hereeee no error........ ")
+
 			err := initconfig.AddFlags(cmd)
 			if err != nil {
 				pterm.Error.Println("failed to initialize rollapp: ", err)
@@ -158,8 +160,9 @@ func Cmd() *cobra.Command {
 			}
 
 			isRollappRegistered, _ := rollapp.IsRollappRegistered(raID, hd)
+			pterm.Error.Printf("%s detailsss: %v, path %v", raID, isRollappRegistered, hd)
 			if !isRollappRegistered {
-				pterm.Error.Printf("%s was not found as a registered rollapp: %v", raID, err)
+				pterm.Error.Printf("%s was not found as a registered rollapp: %v and hd path", raID, err, hd)
 				return
 			}
 
